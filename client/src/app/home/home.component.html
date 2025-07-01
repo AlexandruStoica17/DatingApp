@@ -1,0 +1,30 @@
+<div class="container mt-5">
+    <div style="text-align: center;">
+
+        @if(!registerMode){
+               <h1>Find your match</h1>
+        <p class="lead">Come to view your matches. Sign up!</p>
+        <div class="text-center">
+            <button (click)="registerToggle()" class="btn btn-primary btn-lg me-2">Register</button>
+            <button class="btn btn-info btn-lg me-2">Learn more</button>
+        </div>
+        }
+        @else {
+               <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-4">
+                <!-- folosim [] pt input si () pt output-->
+                 <!-- we specify events with $ -->
+                <!-- [usersFromHomeComponent]="users" bagat in app-register asta e pt div class cu who s your fav user din register.component.html comentat in vid 57 cand nu mai aveam nevoie -->
+                <app-register 
+                                (cancelRegister)="cancelRegisterMode($event)"
+                ></app-register>
+            </div>
+        </div>
+    </div>
+        }
+
+     
+    </div>
+ 
+</div>

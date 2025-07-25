@@ -1,6 +1,9 @@
 using System;
 using API.Data;
+using API.DTOs;
 using API.Entities;
+using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,30 +12,30 @@ namespace API.Controllers;
 
 // [ApiController]
 // [Route("api/[controller]")]  // /api/users
-
-public class UsersController(DataContext context) : BaseApiController
+[Authorize]
+public class UsersController(IUserRepository userRepository) : BaseApiController
 {
 
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [HttpGet]
 
     //sincron vs asincron analogie waiter restaurant
     //sincron = waiter takes order then goes to the chef and waits until done, intre timp rest customers don t get served
     //asincron = wwaiter takes order, goes to chef then takes more orders, when order completed waiter takes the food and delivers
-    public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
     {
-        var users = await context.Users.ToListAsync();
+        var users = await userRepository.GetMembersAsync();
 
-        return users; //puteam si Ok(users) pt ca tot ok e
+        return Ok(users); 
     }
 
-    [Authorize]
-    [HttpGet("{id:int}")]  // /api/users/id(id adica 1, 2 etc ..)
-    public async Task<ActionResult<AppUser>> GetUser(int id)
+    // [Authorize]
+    [HttpGet("{username}")]  // /api/users/id(id adica 1, 2 etc ..) inainte era [HttpGet("{id:int}")] 
+    public async Task<ActionResult<MemberDto>> GetUser(string username)
     {
-        var user = await context.Users.FindAsync(id);
-        if (User == null) return NotFound();
+        var user = await userRepository.GetMemberAsync(username);
+        if (user == null) return NotFound();
 
-        return user; //puteam si Ok(users) pt ca tot ok e
+        return user;
     }
 }

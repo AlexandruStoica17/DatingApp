@@ -5,6 +5,7 @@ import { Member } from '../_models/member';
 import { AccountService } from './account.service';
 import { UntypedFormArray } from '@angular/forms';
 import { of, tap } from 'rxjs';
+import { Photo } from '../_models/photo';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,7 @@ export class MembersService {
   updateMember(member: Member){
     return this.http.put(this.baseUrl + 'users', member).pipe(
       tap(() => {
-        this.members.update(members => this.members.map(m => m.username === member.username ? member : m))
+        this.members.update(members => members.map(m => m.username === member.username ? member : m))
       })
     )
   }
@@ -48,4 +49,31 @@ export class MembersService {
   //     })
   //   }
   // }
+
+  setMainPhoto(photo : Photo){
+    return this.http.put(this.baseUrl + 'users/set-main-photo/' + photo.id, {}).pipe(
+      tap(() => {
+        this.members.update(members => members.map(m => {
+          if(m.photos.includes(photo)) {
+            m.photoUrl = photo.url
+          }
+          return m;
+        }))
+      })
+    )
+  }
+
+  deletePhoto(photo: Photo){
+    return this.http.delete(this.baseUrl + 'users/delete-photo/' + photo.id).pipe(
+
+      tap(() => {
+        this.members.update(members => members.map(m => {
+          if(m.photos.includes(photo)){
+            m.photos = m.photos.filter(x => x.id !== photo.id)
+          }
+          return m
+        }))
+      })
+    ) 
+  }
 }

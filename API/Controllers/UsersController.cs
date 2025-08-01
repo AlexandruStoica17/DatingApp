@@ -5,6 +5,7 @@ using API.Data.Migrations;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -25,9 +26,12 @@ public class UsersController(IUserRepository userRepository, IMapper mapper, IPh
     //sincron vs asincron analogie waiter restaurant
     //sincron = waiter takes order then goes to the chef and waits until done, intre timp rest customers don t get served
     //asincron = wwaiter takes order, goes to chef then takes more orders, when order completed waiter takes the food and delivers
-    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery]UserParams userParams)
     {
-        var users = await userRepository.GetMembersAsync();
+        userParams.CurrentUsername = User.GetUsername();
+        var users = await userRepository.GetMembersAsync(userParams);
+
+        Response.AddPaginationHeader(users);
 
         return Ok(users);
     }

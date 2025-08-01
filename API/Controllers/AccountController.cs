@@ -18,7 +18,7 @@ public class AccountController(DataContext context, ITokenService tokenService, 
     {
         if (await UserExists(registerDto.Username)) return BadRequest("Username is taken!");
 
-        
+
         using var hmac = new HMACSHA512();
 
         var user = mapper.Map<AppUser>(registerDto);
@@ -39,7 +39,8 @@ public class AccountController(DataContext context, ITokenService tokenService, 
         {
             Username = user.UserName,
             Token = tokenService.CreateToken(user),
-            KnownAs = user.KnownAs
+            KnownAs = user.KnownAs,
+            Gender = user.Gender
 
         };
     }
@@ -68,7 +69,9 @@ public class AccountController(DataContext context, ITokenService tokenService, 
             Username = user.UserName,
             KnownAs = user.KnownAs,
             Token = tokenService.CreateToken(user),
-            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
+            Gender = user.Gender,
+            PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+
         };
     }
 
@@ -76,5 +79,5 @@ public class AccountController(DataContext context, ITokenService tokenService, 
     {
         return await context.Users.AnyAsync(x => x.UserName.ToLower() == username.ToLower()); //e case sensitive so Bob != bob
     }
-   
+
 }

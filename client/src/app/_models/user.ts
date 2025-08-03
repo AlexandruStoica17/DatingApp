@@ -5,4 +5,5 @@ export interface User{ //nu e ca in C# sa punem iUser pt interfata
     gender: string;
     token: string;
     photoUrl?: string;
+    roles: string[];
 }

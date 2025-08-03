@@ -20,7 +20,7 @@ namespace API.Controllers;
 public class UsersController(IUserRepository userRepository, IMapper mapper, IPhotoService photoService) : BaseApiController
 {
 
-    // [AllowAnonymous]
+    // [Authorize(Roles ="Admin")]
     [HttpGet]
 
     //sincron vs asincron analogie waiter restaurant
@@ -36,7 +36,7 @@ public class UsersController(IUserRepository userRepository, IMapper mapper, IPh
         return Ok(users);
     }
 
-    // [Authorize]
+    // [Authorize(Roles ="Member")]
     [HttpGet("{username}")]  // /api/users/id(id adica 1, 2 etc ..) inainte era [HttpGet("{id:int}")] 
     public async Task<ActionResult<MemberDto>> GetUser(string username)
     {

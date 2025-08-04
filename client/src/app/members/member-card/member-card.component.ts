@@ -2,6 +2,7 @@ import { Component, computed, inject, InjectFlags, input, ViewEncapsulation } fr
 import { Member } from '../../_models/member';
 import { RouterLink } from '@angular/router';
 import { LikesService } from '../../_services/likes.service';
+import { PresenceService } from '../../_services/presence.service';
 
 @Component({
   selector: 'app-member-card',
@@ -13,8 +14,10 @@ import { LikesService } from '../../_services/likes.service';
 })
 export class MemberCardComponent {
   private likeService = inject(LikesService);
+  private PresenceService = inject(PresenceService);
   member = input.required<Member>();
-  hasLikded = computed(() => this.likeService.likeIds().includes(this.member().id))
+  hasLikded = computed(() => this.likeService.likeIds().includes(this.member().id));
+  isOnline = computed(() => this.PresenceService.onlineUsers().includes(this.member().username)); 
 
   toggleLike(){
     this.likeService.toggleLike(this.member().id).subscribe({

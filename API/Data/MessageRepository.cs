@@ -32,12 +32,12 @@ public class MessageRepository(DataContext context, IMapper mapper) : IMessageRe
         return await context.Connections.FindAsync(connectionId);
     }
 
-    public async Task<Group?> GetGroupForConnection(string connectionId)
+   public async Task<Group?> GetGroupForConnection(string connectionId)
     {
         return await context.Groups
-        .Include(x => x.Connections)
-        .Where(x => x.Connections.Any(c => connectionId == connectionId))
-        .FirstOrDefaultAsync();
+            .Include(x => x.Connections)
+            .Where(x => x.Connections.Any(c => c.ConnectionId == connectionId))
+            .FirstOrDefaultAsync();
     }
 
     public async Task<Message?> GetMessage(int id)
